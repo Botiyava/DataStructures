@@ -62,22 +62,6 @@ func (l *LinkedList) Pop() interface{}{
 	return item.key
 }
 func main() {
-	list := NewLinkedList()
-	fmt.Println(list.Len())
-	list.Append(0) //ok
-	list.Append(1) //ok
-	list.Append(2) //ok
-	list.Append(3) //ok
-	list.Append(4) //ok
-	list.Append(5) //ok
-	list.Append(6) //ok
-	list.Append(7) //ok
-	list.Display()
-	f := list.Pop()
-	fmt.Println(f)
-	list.Display()
-	list.Pop()
-	list.Pop()
-	list.Display()
 
-}
+	}
+
