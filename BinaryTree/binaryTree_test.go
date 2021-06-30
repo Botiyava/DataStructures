@@ -1,16 +1,47 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
-func TestAppend(t *testing.T){
+func TestPrintFromLowestToHighest(t *testing.T) {
+	//First test
+	t1 := NewTree()
+	t1.Append(4)
+	t1.Append(8)
+	t1.Append(3)
+	//Second test
+	t2 := NewTree()
+	//Third test
+	t3 := NewTree()
+	t3.Append(5)
+	tests := []struct {
+		name string
+		tree *tree
+		want string
+	}{
+		{"random tree", t1, "3 4 8 "},
+		{"empty tree", t2, ""},
+		{"tree with only root node", t3, "5 "},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := &strings.Builder{}
+			nprint(out, test.tree.root)
+			if out.String() != test.want {
+				t.Errorf("PrintFromLowestToHighest(): got: %v, want: %v", out.String(), test.want)
+			}
+		})
+	}
+}
+func TestAppend(t *testing.T) {
 	//First test
 	t1 := NewTree()
 	//Second test
 	t2 := NewTree()
 	t2.root = &node{
-		key:8,
+		key: 8,
 	}
 	t2.root.left = &node{
 		key: 6,
@@ -25,21 +56,21 @@ func TestAppend(t *testing.T){
 		key: 24,
 	}
 
-	tests := []struct{
-		name string
-		tree *tree
-		data int
+	tests := []struct {
+		name             string
+		tree             *tree
+		data             int
 		wantBeforeAppend bool
-		wantAfterAppend bool
+		wantAfterAppend  bool
 		//TODO: if element > than left and < than right
 
 	}{
-		{"empty tree", t1, 4,false,true},
+		{"empty tree", t1, 4, false, true},
 		{"append in random tree", t2, 5, false, true},
-		{"element already exist", t2, 7, true,true},
+		{"element already exist", t2, 7, true, true},
 	}
-	for _, test := range tests{
-		t.Run(test.name, func(t *testing.T){
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			_, existBefore := test.tree.Exist(test.data)
 			test.tree.Append(test.data)
 			_, existAfter := test.tree.Exist(test.data)
@@ -53,7 +84,7 @@ func TestAppend(t *testing.T){
 		})
 	}
 }
-func TestMax(t *testing.T){
+func TestMax(t *testing.T) {
 	//First test
 	t1 := NewTree()
 	//Second test
@@ -66,30 +97,30 @@ func TestMax(t *testing.T){
 	t3.Append(24)
 	t3.Append(12)
 
-	tests := []struct{
-		name string
-		tree *tree
+	tests := []struct {
+		name    string
+		tree    *tree
 		wantInt int
 		wantErr bool
 	}{
 		{"empty tree", t1, 0, true},
 		{"maximum - root node", t2, 4, false},
-		{"maximum - random node", t3,  24, false},
+		{"maximum - random node", t3, 24, false},
 	}
-	for _, test := range tests{
-		t.Run(test.name, func(t *testing.T){
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			gotInt, gotErr := test.tree.Max()
-			if gotInt != test.wantInt{
+			if gotInt != test.wantInt {
 				t.Errorf("Max(): got: %v, want: %v", gotInt, test.wantInt)
 			}
-			if (gotErr != nil) != test.wantErr{
+			if (gotErr != nil) != test.wantErr {
 				t.Errorf("Max(): got: %v, want: %v", gotErr, test.wantErr)
 			}
 		})
 	}
 }
 
-func TestMin(t *testing.T){
+func TestMin(t *testing.T) {
 	//First test
 	t1 := NewTree()
 	//Second test
@@ -102,29 +133,29 @@ func TestMin(t *testing.T){
 	t3.Append(24)
 	t3.Append(12)
 
-	tests := []struct{
-		name string
-		tree *tree
+	tests := []struct {
+		name    string
+		tree    *tree
 		wantInt int
 		wantErr bool
 	}{
-		{"empty tree",t1, 0,true},
+		{"empty tree", t1, 0, true},
 		{"minimum = root node", t2, 4, false},
 		{"find minimum in random place", t3, 8, false},
 	}
-	for _, test := range tests{
-		t.Run(test.name, func(t *testing.T){
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			gotInt, gotErr := test.tree.Min()
-			if gotInt != test.wantInt{
+			if gotInt != test.wantInt {
 				t.Errorf("Min(): got: %v, want: %v", gotInt, test.wantInt)
 			}
-			if (gotErr != nil) != test.wantErr{
+			if (gotErr != nil) != test.wantErr {
 				t.Errorf("Min(): got: %v, want: %v", gotErr, test.wantErr)
 			}
 		})
 	}
 }
-func TestExist(t *testing.T){
+func TestExist(t *testing.T) {
 	//First test
 	t1 := NewTree()
 	//Second test
@@ -137,26 +168,25 @@ func TestExist(t *testing.T){
 	t3.Append(24)
 	t3.Append(12)
 
-
-	tests := []struct{
-		name string
-		data int
-		tree *tree
-		wantInt int
+	tests := []struct {
+		name     string
+		data     int
+		tree     *tree
+		wantInt  int
 		wantBool bool
 	}{
-		{"empty tree", 4,t1,0, false },
+		{"empty tree", 4, t1, 0, false},
 		{"find root node", 4, t2, 4, true},
 		{"find node in random place", 12, t3, 12, true},
 	}
-	for _, test := range tests{
-		t.Run(test.name, func(t *testing.T){
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 
 			gotInt, gotBool := test.tree.Exist(test.data)
-			if gotInt != test.wantInt{
+			if gotInt != test.wantInt {
 				t.Errorf("NewTree(): got: %v, want: %v", gotInt, test.wantInt)
 			}
-			if gotBool != test.wantBool{
+			if gotBool != test.wantBool {
 				t.Errorf("NewTree(): got: %v, want: %v", gotBool, test.wantBool)
 			}
 		})
