@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"strconv"
+)
 
 type node struct {
 	key         int
@@ -14,6 +20,33 @@ type tree struct {
 func NewTree() *tree {
 	return &tree{}
 }
+
+func (t *tree) Max() (int, error) {
+	n := t.root
+	if n == nil {
+		return 0, errors.New("trying to get a maximum value from empty tree")
+	}
+	for {
+		if n.right == nil {
+			return n.key, nil
+		}
+		n = n.right
+	}
+}
+
+func (t *tree) Min() (int, error) {
+	n := t.root
+	if n == nil {
+		return 0, errors.New("trying to get a minimum value from empty tree")
+	}
+	for {
+		if n.left == nil {
+			return n.key, nil
+		}
+		n = n.left
+
+	}
+}
 func (t *tree) Append(data int) {
 	insertNode := &node{
 		key: data,
@@ -25,7 +58,6 @@ func (t *tree) Append(data int) {
 	}
 }
 
-
 func (t *tree) PrintFromLowestToHighest() {
 	defer fmt.Println()
 	fmt.Printf("[ ")
@@ -33,7 +65,7 @@ func (t *tree) PrintFromLowestToHighest() {
 	if t.root == nil {
 		return
 	} else {
-		nprint(t.root)
+		nprint(os.Stdout, t.root)
 	}
 }
 
@@ -50,7 +82,6 @@ func (t *tree) Exist(data int) (int, bool) {
 
 func (n *node) insert(node *node) {
 	if node.key == n.key {
-		fmt.Println("такой элемент уже есть")
 		return
 	}
 	if node.key < n.key {
@@ -68,13 +99,16 @@ func (n *node) insert(node *node) {
 	}
 }
 
-func nprint(n *node) {
+func nprint(writer io.Writer, n *node) {
 	if n == nil {
 		return
 	}
-	nprint(n.left)
-	fmt.Printf("%d ", n.key)
-	nprint(n.right)
+	nprint(writer, n.left)
+	if _, err := writer.Write([]byte(strconv.Itoa(n.key) + " ")); err != nil {
+		return
+	}
+	//fmt.Printf("%d ", n.key) // if we don't want to test method
+	nprint(writer, n.right)
 }
 
 func exist(root *node, data int) (ok bool) {
@@ -97,14 +131,5 @@ func exist(root *node, data int) (ok bool) {
 	return false
 }
 func main() {
-	t := NewTree()
-	t.Append(8)
-	t.Append(4)
-	t.Append(7)
-	t.Append(3)
-	t.PrintFromLowestToHighest()
-	if _, ok := t.Exist(7); !ok {
-		fmt.Println("Такого элемента нет")
-	}
 
 }
