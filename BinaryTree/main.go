@@ -25,7 +25,7 @@ func (t *tree) Append(data int) {
 	}
 }
 
-//Печатает элементы дерева от наименьшего до наибольшего
+
 func (t *tree) PrintFromLowestToHighest() {
 	defer fmt.Println()
 	fmt.Printf("[ ")
